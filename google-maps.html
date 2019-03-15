@@ -21,8 +21,11 @@
   <body>
     <div id="map"></div>
     <script>
-      let map, directions;
+      // https://developers.google.com/maps/documentation/javascript/examples/directions-simple
+
+      let map, directions, directionsDisplay;
       function initMap() {
+        directionsDisplay = new google.maps.DirectionsRenderer;
         directions = new google.maps.DirectionsService;
         navigator.geolocation.getCurrentPosition( (position) => {
             let mapOptions = {
@@ -31,6 +34,8 @@
             };
             map = new google.maps.Map(document.getElementById('map'), mapOptions);
             console.log( position);
+
+            directionsDisplay.setMap(map);
 
             // MARKERS ON MAP
             let markers = [
@@ -51,13 +56,13 @@
             directions.route({
                 origin: markers[0],
                 destination: markers[3],
+                waypoints: [{location: markers[1]}, {location: markers[2]}],
                 optimizeWaypoints: true,
                 travelMode: 'DRIVING'
                 }, function(response, status) {
                     if (status === 'OK') {
-                 
+                      directionsDisplay.setDirections(response);
                     }
-                    debugger;
                 }
             )
             
@@ -65,6 +70,6 @@
       }
     </script>
     <!-- ADD API_KEY TO PARAMETER TO REMOVE DEV MODE-->
-    <script src="https://maps.googleapis.com/maps/api/js?callback=initMap" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=&callback=initMap" async defer></script>
   </body>
 </html>
